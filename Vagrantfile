@@ -42,15 +42,17 @@ Vagrant.configure(2) do |config|
       if [ $? -ne 0 ]; then
         # Download tar
         echo "Download URL: #{url}#{pe_ver}"
-        echo "Downloading Puppet Enterprise, this might take a long while"
+        echo "Downloading Puppet Enterprise, this may take a few minutes"
         sudo wget --quiet --progress=bar:force --content-disposition "#{url}#{pe_ver}"
         # Extract tar to /root
         sudo tar xzvf puppet-enterprise-*.tar* -C /root
         # Install PE from answers file
-        #sudo /root/puppet-enterprise-*/puppet-enterprise-installer -a /vagrant/puppetfiles/answers-#{pe_ver}*-master.#{domain}.txt
+        echo "Ready to install Puppet Enterprise #{pe_ver}"
+        sudo /root/puppet-enterprise-*/puppet-enterprise-installer -c /vagrant/puppetfiles/custom-pe.conf -y
         # Clean up
         #sudo rm -fr /root/puppet-enterprise-*
-        #sudo echo "*.#{domain}" > /etc/puppetlabs/puppet/autosign.conf
+        sudo echo "*.#{domain}" > /etc/puppetlabs/puppet/autosign.conf
+        sudo puppet agent -t
       else
         sudo /usr/local/bin/puppet agent -t
       fi

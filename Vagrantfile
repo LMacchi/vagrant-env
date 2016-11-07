@@ -14,6 +14,7 @@ domain = 'puppetlabs.vm'
 startip = 51
 box = 'puppetlabs/centos-6.6-64-nocm'
 agents = 0
+install_gitlab = true
 
 # Calculate version of PE to download
 url = return_url(box)
@@ -59,9 +60,39 @@ Vagrant.configure(2) do |config|
     SHELL
   end
 
+  if gitlab 
+    ip = startip+1
+    config.vm.define "gitlab" do |gitlab|
+    gitlab.vm.box = box
+    gitlab.vm.hostname = "gitlab.#{domain}"
+    gitlab.vm.network "private_network", ip: "#{iprange}.#{ip}"
+    gitlab.vm.provider "virtualbox" do |vb|
+      vb.memory = "1024"
+    end
+    gitlab.vm.provision :hosts do |prov|
+      prov.autoconfigure = true
+    end
+    gitlab.vm.provision "shell", inline: <<-SHELL
+      # Stop iptables
+      sudo service iptables stop
+      sudo chkconfig iptables off
+      # Install puppet
+      /usr/local/bin/puppet --version 2&> /dev/null
+      if [ $? -ne 0 ]; then
+        curl -k https://master.#{domain}:8140/packages/current/install.bash | sudo bash
+      else
+        sudo /usr/local/bin/puppet agent -t
+      fi
+      sudo /opt/puppetlabs/puppet/bin/gem install r10k --no-ri --no-rdoc
+      PUPPETFILE=/vagrant/puppetfiles/Puppetfile_gitlab sudo /opt/puppetlabs/puppet/bin/r10k puppetfile install 
+      sudo /usr/local/bin/puppet apply /vagrant/puppetfiles/gitlab.pp --modulepath /tmp
+      SHELL
+    end
+  end
+
   if agents > 0
     (1..agents).each do |i|
-    ip = startip+i
+    ip = startip+1+i
     config.vm.define "agent#{i}" do |agent|
       agent.vm.box = box
       agent.vm.hostname = "agent#{i}.#{domain}"

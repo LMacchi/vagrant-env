@@ -63,6 +63,8 @@ Vagrant.configure(2) do |config|
         # Deploy code
         echo "Deploying puppet code from version control server"
         sudo /vagrant/scripts/deploy_code.sh
+        # Create VCS group
+        sudo /vagrant/scripts/create_vcs_group.sh
       else
         sudo /usr/local/bin/puppet agent -t
       fi
@@ -89,12 +91,13 @@ Vagrant.configure(2) do |config|
       /usr/local/bin/puppet --version 2&> /dev/null
       if [ $? -ne 0 ]; then
         curl -s -k https://master.#{domain}:8140/packages/current/install.bash | sudo bash
+        # First run to show up in the console
+        sudo /usr/local/bin/puppet agent -t
+        # Real run with the console classification
+        sudo /usr/local/bin/puppet agent -t
       else
         sudo /usr/local/bin/puppet agent -t
       fi
-      sudo /opt/puppetlabs/puppet/bin/gem install r10k --no-ri --no-rdoc
-      PUPPETFILE=/vagrant/puppetfiles/Puppetfile_gitlab sudo /opt/puppetlabs/puppet/bin/r10k puppetfile install 
-      sudo /usr/local/bin/puppet apply /vagrant/puppetfiles/gitlab.pp --modulepath /tmp
       SHELL
     end
   end

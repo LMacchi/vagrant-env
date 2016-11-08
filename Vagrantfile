@@ -51,7 +51,7 @@ Vagrant.configure(2) do |config|
         echo "Ready to install Puppet Enterprise #{pe_ver}"
         sudo /root/puppet-enterprise-*/puppet-enterprise-installer -c /vagrant/puppetfiles/custom-pe.conf -y
         # Clean up
-        #sudo rm -fr /root/puppet-enterprise-*
+        sudo rm -fr /root/puppet-enterprise-*
         # Add an autosign condition
         sudo echo "*.#{domain}" > /etc/puppetlabs/puppet/autosign.conf
         echo "Running puppet for the first time"

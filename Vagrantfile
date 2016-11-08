@@ -61,11 +61,10 @@ Vagrant.configure(2) do |config|
         # Create deploy token
         sudo /vagrant/scripts/create_token.sh
         # Deploy code
+        echo "Deploying puppet code from version control server"
         sudo /vagrant/scripts/deploy_code.sh
       else
         sudo /usr/local/bin/puppet agent -t
-        sudo /vagrant/scripts/create_token.sh
-        sudo /vagrant/scripts/deploy_code.sh
       fi
     SHELL
   end

@@ -14,4 +14,8 @@ Fill the following variables in Vagrantfile:
 * arch: Architecture of the boxes to select the right puppet installer. Ex: 'el-6-x86_64'
 * puppetver: Puppet Enterprise version, defaults to "latest". Ex: '2015.3.3'
 * agents: How many agents to create. Set to 0 to not create agents.
+* install_gitlab: Do you want a gitlab server?
 
+TODO:
+* bash -> ruby
+* use NC to create gitlab box

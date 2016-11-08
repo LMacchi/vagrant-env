@@ -88,7 +88,7 @@ Vagrant.configure(2) do |config|
       # Install puppet
       /usr/local/bin/puppet --version 2&> /dev/null
       if [ $? -ne 0 ]; then
-        curl -k https://master.#{domain}:8140/packages/current/install.bash | sudo bash
+        curl -s -k https://master.#{domain}:8140/packages/current/install.bash | sudo bash
       else
         sudo /usr/local/bin/puppet agent -t
       fi
@@ -119,7 +119,7 @@ Vagrant.configure(2) do |config|
         # Install puppet
         /usr/local/bin/puppet --version 2&> /dev/null
         if [ $? -ne 0 ]; then
-          curl -k https://master.#{domain}:8140/packages/current/install.bash | sudo bash
+          curl -s -k https://master.#{domain}:8140/packages/current/install.bash | sudo bash
         else
           sudo /usr/local/bin/puppet agent -t
         fi

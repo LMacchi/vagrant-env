@@ -52,15 +52,25 @@ Vagrant.configure(2) do |config|
         sudo /root/puppet-enterprise-*/puppet-enterprise-installer -c /vagrant/puppetfiles/custom-pe.conf -y
         # Clean up
         #sudo rm -fr /root/puppet-enterprise-*
+        # Add an autosign condition
         sudo echo "*.#{domain}" > /etc/puppetlabs/puppet/autosign.conf
-        sudo puppet agent -t
+        echo "Running puppet for the first time"
+        sudo /usr/local/bin/puppet agent -t
+        # Create deploy user
+        sudo /vagrant/scripts/create_deploy.sh
+        # Create deploy token
+        sudo /vagrant/scripts/create_token.sh
+        # Deploy code
+        sudo /vagrant/scripts/deploy_code.sh
       else
         sudo /usr/local/bin/puppet agent -t
+        sudo /vagrant/scripts/create_token.sh
+        sudo /vagrant/scripts/deploy_code.sh
       fi
     SHELL
   end
 
-  if gitlab 
+  if install_gitlab 
     ip = startip+1
     config.vm.define "gitlab" do |gitlab|
     gitlab.vm.box = box

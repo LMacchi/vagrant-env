@@ -93,10 +93,6 @@ Vagrant.configure(2) do |config|
       /usr/local/bin/puppet --version 2&> /dev/null
       if [ $? -ne 0 ]; then
         curl -s -k https://master.#{domain}:8140/packages/current/install.bash | sudo bash
-        # After the first run, node is added to console
-        # Run puppet agent to get classification
-        sudo /vagrant/scripts/wait_for_puppet.sh
-        sudo /usr/local/bin/puppet agent -t
       else
         sudo /usr/local/bin/puppet agent -t
       fi

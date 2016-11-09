@@ -93,6 +93,8 @@ Vagrant.configure(2) do |config|
       /usr/local/bin/puppet --version 2&> /dev/null
       if [ $? -ne 0 ]; then
         curl -s -k https://master.#{domain}:8140/packages/current/install.bash | sudo bash
+        # Too lazy to troubleshoot, gitlab requires another reconfigure for ssh
+        sudo puppet resource exec '/usr/bin/gitlab-ctl reconfigure' logoutput=false 2&> /dev/null
       else
         sudo /usr/local/bin/puppet agent -t
       fi

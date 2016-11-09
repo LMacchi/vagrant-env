@@ -63,6 +63,8 @@ Vagrant.configure(2) do |config|
         # Deploy code
         echo "Deploying puppet code from version control server"
         sudo /vagrant/scripts/deploy_code.sh
+        # Update classes in console
+        sudo /vagrant/scripts/update_classes.sh
         # Create VCS group
         sudo /vagrant/scripts/create_vcs_group.sh
       else

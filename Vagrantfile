@@ -13,7 +13,7 @@ masterip = iprange+'.50'
 domain = 'puppetlabs.vm'
 startip = 51
 box = 'puppetlabs/centos-6.6-64-nocm'
-agents = 1
+agents = 2
 install_gitlab = true
 
 # Calculate version of PE to download
@@ -74,7 +74,7 @@ Vagrant.configure(2) do |config|
   end
 
   if install_gitlab 
-    ip = startip+1
+    ip = startip
     config.vm.define "gitlab" do |gitlab|
     gitlab.vm.box = box
     gitlab.vm.hostname = "gitlab.#{domain}"
@@ -104,7 +104,7 @@ Vagrant.configure(2) do |config|
 
   if agents > 0
     (1..agents).each do |i|
-    ip = startip+1+i
+    ip = startip+1
     config.vm.define "agent#{i}" do |agent|
       agent.vm.box = box
       agent.vm.hostname = "agent#{i}.#{domain}"

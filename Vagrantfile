@@ -10,8 +10,9 @@ require_relative './scripts/calculate_pe.rb'
 check_update = false
 iprange = '10.10.5'
 masterip = iprange+'.50'
+gitlabip = iprange+'.51'
 domain = 'puppetlabs.vm'
-startip = 51
+startip = 60
 box = 'puppetlabs/centos-6.6-64-nocm'
 agents = 2
 install_gitlab = true
@@ -74,11 +75,10 @@ Vagrant.configure(2) do |config|
   end
 
   if install_gitlab 
-    ip = startip
     config.vm.define "gitlab" do |gitlab|
     gitlab.vm.box = box
     gitlab.vm.hostname = "gitlab.#{domain}"
-    gitlab.vm.network "private_network", ip: "#{iprange}.#{ip}"
+    gitlab.vm.network "private_network", ip: gitlabip
     gitlab.vm.provider "virtualbox" do |vb|
       vb.memory = "1024"
     end
@@ -93,6 +93,8 @@ Vagrant.configure(2) do |config|
       /usr/local/bin/puppet --version 2&> /dev/null
       if [ $? -ne 0 ]; then
         curl -s -k https://master.#{domain}:8140/packages/current/install.bash | sudo bash
+        /vagrant/scripts/wait_for_puppet.sh
+        sudo /usr/local/bin/puppet agent -t
         # Too lazy to troubleshoot, gitlab requires another reconfigure for ssl
         sudo /usr/bin/gitlab-ctl reconfigure 2&> /dev/null
       else
@@ -104,7 +106,7 @@ Vagrant.configure(2) do |config|
 
   if agents > 0
     (1..agents).each do |i|
-    ip = startip+1
+    ip = startip
     config.vm.define "agent#{i}" do |agent|
       agent.vm.box = box
       agent.vm.hostname = "agent#{i}.#{domain}"
@@ -128,6 +130,7 @@ Vagrant.configure(2) do |config|
         fi
       SHELL
     end
+    ip += 1
   end
 
 end

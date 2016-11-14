@@ -18,4 +18,3 @@ Fill the following variables in Vagrantfile:
 
 TODO:
 * bash -> ruby
-* use NC to create gitlab box

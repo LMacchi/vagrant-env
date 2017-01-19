@@ -14,8 +14,8 @@ gitlabip = iprange+'.51'
 domain = 'puppetlabs.vm'
 startip = 60
 box = 'puppetlabs/centos-6.6-64-nocm'
-agents = 2
-install_gitlab = true
+agents = 1
+install_gitlab = false
 
 # Calculate version of PE to download
 url = return_url(box)
@@ -57,6 +57,11 @@ Vagrant.configure(2) do |config|
         sudo echo "*.#{domain}" > /etc/puppetlabs/puppet/autosign.conf
         echo "Running puppet for the first time"
         sudo /usr/local/bin/puppet agent -t
+        # Add SSH keys
+        sudo mkdir /etc/puppetlabs/puppetserver/ssh
+        sudo chmod 700 /etc/puppetlabs/puppetserver/ssh
+        sudo cp /vagrant/puppetfiles/keys/id-control_repo.rsa* /etc/puppetlabs/puppetserver/ssh
+        sudo chown -R pe_puppet: /etc/puppetlabs/puppetserver/ssh
         # Create deploy user
         sudo /vagrant/scripts/create_deploy.sh
         # Create deploy token

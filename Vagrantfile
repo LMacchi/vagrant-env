@@ -13,8 +13,8 @@ masterip = iprange+'.50'
 gitlabip = iprange+'.51'
 domain = 'puppetlabs.vm'
 startip = 60
-box = 'puppetlabs/centos-6.6-64-nocm'
-agents = 1
+box = 'hashicorp/xenial64'
+agents = 2
 install_gitlab = false
 
 # Calculate version of PE to download
